@@ -78,7 +78,46 @@ fs.readFile('public/data/apiconfig.json', 'utf-8', function(err, data) {
     }
 });
 
-var app = module.exports = express.createServer();
+//
+// Determine if we should launch as http/s and get keys and certs if needed
+//
+
+var app, httpsKey, httpsCert;
+
+if (config.https && config.https.on && config.https.keyPath && config.https.certPath) {
+    console.log("Starting secure server (https)");
+
+    // try reading the key and cert files, die if that fails
+    try {
+        httpsKey = fs.readFileSync(config.https.keyPath);
+    } 
+    catch (err) {
+        console.error("Failed to read https key", config.https.keyPath);
+        console.log(err);
+        process.exit(1);
+    }
+    try {
+        httpsCert = fs.readFileSync(config.https.certPath);
+    }
+    catch (err) {
+        console.error("Failed to read https cert", config.https.certPath);
+        console.log(err);
+        process.exit(1);
+    }
+
+    app = module.exports = express.createServer({
+        key: httpsKey,
+        cert: httpsCert        
+    });
+
+}
+else if (config.https && config.https.on) {
+    console.error("No key or certificate specified.");
+    process.exit(1);
+}
+else {
+    app = module.exports = express.createServer();
+}
 
 if (process.env.REDISTOGO_URL) {
     var rtg   = require("url").parse(process.env.REDISTOGO_URL);
