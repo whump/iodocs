@@ -34,7 +34,8 @@ var express     = require('express'),
     https       = require('https'),
     crypto      = require('crypto'),
     redis       = require('redis'),
-    RedisStore  = require('connect-redis')(express);
+    RedisStore  = require('connect-redis')(express),
+    jsschema    = require('schema')();
 
 // Configuration
 try {
@@ -290,7 +291,7 @@ function processRequest(req, res, next) {
         if (params.hasOwnProperty(param)) {
             if (params[param] !== '') {
                 // URL params are prepended with ":"
-                var regx = new RegExp(':' + param);
+                var regx = new RegExp('^:' + param);
 
                 // If the param is actually a part of the URL, put it in the URL and remove the param
                 if (!!regx.test(methodURL)) {
