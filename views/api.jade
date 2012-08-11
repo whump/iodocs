@@ -146,12 +146,15 @@ ul
                                                         a(href='#', class='remove') Remove
                                         a(href='#', class='add-headers') Add Header
                                     // Create header fields and button to add/remove headers.
-                            - if (method.content )
+                            - if (method.content)
                                 div.content
                                     h4.title
                                         div.indicator
                                         span Content
                                     div.fields
+                                        select(name='contentType')
+                                            - each choice in method.content.contentType
+                                                option(value=choice) #{choice}
                                         textarea(columns='80', rows='10', name='requestContent', placeholder='{}')
                                         a(href='#', class='remove') Remove
                             - if (!method['read-only'])

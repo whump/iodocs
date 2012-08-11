@@ -317,6 +317,8 @@ function processRequest(req, res, next) {
 
     var reqQuery = req.body,
         params = reqQuery.params || {},
+        content = reqQuery.requestContent || '',
+        contentType = reqQuery.contentType || '',
         methodURL = reqQuery.methodUri,
         httpMethod = reqQuery.httpMethod,
         apiKey = reqQuery.apiKey,
@@ -330,7 +332,7 @@ function processRequest(req, res, next) {
         if (params.hasOwnProperty(param)) {
             if (params[param] !== '') {
                 // URL params are prepended with ":"
-                var regx = new RegExp('^:' + param);
+                var regx = new RegExp(':' + param);
 
                 // If the param is actually a part of the URL, put it in the URL and remove the param
                 if (!!regx.test(methodURL)) {
@@ -571,6 +573,12 @@ function processRequest(req, res, next) {
             console.log('Protocol: HTTP');
             doRequest = http.request;
         }
+	if(contentType !== ''){
+            if (config.debug) {
+		console.log('Setting Content-Type: ' + contentType);
+            }
+	    options.headers['Content-Type'] = contentType;
+	}
 
         // API Call. response is the response from the API, res is the response we will send back to the user.
         var apiCall = doRequest(options, function(response) {
@@ -624,6 +632,9 @@ function processRequest(req, res, next) {
             };
         });
 
+	if(content !== ''){
+	    apiCall.write(content);
+        }
         apiCall.end();
     }
 }
