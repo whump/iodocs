@@ -34,8 +34,7 @@ var express     = require('express'),
     https       = require('https'),
     crypto      = require('crypto'),
     redis       = require('redis'),
-    RedisStore  = require('connect-redis')(express),
-    jsschema    = require('schema')();
+    RedisStore  = require('connect-redis')(express);
 
 // Configuration
 try {
