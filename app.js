@@ -356,7 +356,7 @@ function processRequest(req, res, next) {
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
-            path: apiConfig.publicPath + methodURL// + ((paramString.length > 0) ? '?' + paramString : "")
+            path: apiConfig.publicPath + methodURL + ((paramString.length > 0) ? '?' + paramString : "")
         };
 
     if (apiConfig.oauth) {
@@ -509,9 +509,7 @@ function processRequest(req, res, next) {
     function unsecuredCall() {
         console.log('Unsecured Call');
 
-        if (['POST','PUT','DELETE'].indexOf(httpMethod) === -1) {
-            options.path += ((paramString.length > 0) ? '?' + paramString : "");
-        }
+	options.path += ((paramString.length > 0) ? '?' + paramString : "");
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
@@ -557,6 +555,10 @@ function processRequest(req, res, next) {
             }
 
             options.headers = headers;
+        }
+
+	if (content.length > 0) {
+            options.headers['Content-Length'] = content.length;
         }
 
 
